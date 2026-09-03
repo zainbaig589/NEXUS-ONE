@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, Response
 from sqlalchemy.orm import Session
 from typing import List, Optional
 
@@ -15,6 +15,7 @@ from app.ai.service import InvestigationService
 from app.database import get_db
 from app.models.incident import Incident
 from app.reports.html import render_report_html
+from app.reports.pdf import render_report_pdf
 from app.reports.schemas import IncidentReport
 from app.reports.service import ReportService
 from app.response.service import ResponseService
@@ -210,27 +211,36 @@ async def get_incident_recommendations(incident_id: str, db: Session = Depends(g
 @router.post("/{incident_id}/report", response_model=IncidentReport)
 async def generate_incident_report(
     incident_id: str,
-    format: str = Query("json", pattern="^(json|html)$"),
+    format: str = Query("json", pattern="^(json|html|pdf)$"),
     db: Session = Depends(get_db),
 ):
     """Generate a structured incident report and persist it.
 
     The report separates observed evidence, analysis (deterministic scoring
-    plus advisory AI narrative), and recommended actions. HTML output is
-    available via ``?format=html``.
+    plus advisory AI narrative), and recommended actions. HTML and PDF
+    output are available via ``?format=html`` or ``?format=pdf``.
     """
     report = ReportService.generate_report(db, incident_id)
     if report is None:
         raise HTTPException(status_code=404, detail="Incident not found")
     if format == "html":
         return HTMLResponse(render_report_html(report))
+    if format == "pdf":
+        pdf_bytes = render_report_pdf(report)
+        return Response(
+            content=pdf_bytes,
+            media_type="application/pdf",
+            headers={
+                "Content-Disposition": f'attachment; filename="nexus-one-report-{incident_id}.pdf"'
+            },
+        )
     return report
 
 
 @router.get("/{incident_id}/report", response_model=IncidentReport)
 async def get_incident_report(
     incident_id: str,
-    format: str = Query("json", pattern="^(json|html)$"),
+    format: str = Query("json", pattern="^(json|html|pdf)$"),
     db: Session = Depends(get_db),
 ):
     """Retrieve the most recently generated report for an incident."""
@@ -246,4 +256,13 @@ async def get_incident_report(
     report = IncidentReport.model_validate(content)
     if format == "html":
         return HTMLResponse(render_report_html(report))
+    if format == "pdf":
+        pdf_bytes = render_report_pdf(report)
+        return Response(
+            content=pdf_bytes,
+            media_type="application/pdf",
+            headers={
+                "Content-Disposition": f'attachment; filename="nexus-one-report-{incident_id}.pdf"'
+            },
+        )
     return report

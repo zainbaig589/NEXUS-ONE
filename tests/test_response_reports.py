@@ -527,7 +527,7 @@ class TestIncidentReportAPI:
 
     def test_report_invalid_format_rejected(self, client, db_session):
         incident = _multi_stage_attack(db_session)
-        response = client.post(f"/api/v1/incidents/{incident.id}/report?format=pdf")
+        response = client.post(f"/api/v1/incidents/{incident.id}/report?format=xml")
         assert response.status_code == 422
 
     def test_report_alerts_carry_evidence_ids(self, client, db_session):

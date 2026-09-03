@@ -15,6 +15,8 @@ class HealthResponse(BaseModel):
     version: str
     environment: str
     database: str
+    ml_model: Optional[str] = None
+    ai_provider: Optional[str] = None
 
 
 class EventBase(BaseModel):

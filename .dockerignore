@@ -1,0 +1,51 @@
+# Docker
+*.log
+*.pid
+*.seed
+*.pid.lock
+
+# Data volumes
+data/
+*.db
+
+# Environment files
+.env
+.env.local
+.env.production
+
+# Build artifacts
+dist/
+build/
+node_modules/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Testing
+.pytest_cache/
+htmlcov/
+.coverage
+coverage.xml
+
+# Models
+models/
+*.pkl
+*.joblib

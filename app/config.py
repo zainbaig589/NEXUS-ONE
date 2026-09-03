@@ -17,6 +17,8 @@ class Settings(BaseSettings):
 
     API_V1_PREFIX: str = "/api/v1"
 
+    CORS_ORIGINS: list[str] = ["http://localhost:5173", "http://127.0.0.1:5173"]
+
     ML_MODEL_PATH: Optional[str] = None
     SEED_RULES: bool = False
 

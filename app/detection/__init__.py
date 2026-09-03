@@ -43,6 +43,7 @@ class RuleEngine:
                     severity=rule.severity,
                     status="new",
                     description=f"Rule '{rule.name}' triggered",
+                    detection_source="rule",
                 )
                 alerts.append(alert)
         
