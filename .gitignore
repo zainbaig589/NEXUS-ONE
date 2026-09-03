@@ -11,8 +11,7 @@ build/
 
 # Virtual environment
 venv/
-env/
-.env
+
 
 # IDEs
 .vscode/
@@ -41,5 +40,3 @@ coverage.xml
 # Logs
 *.log
 
-# Trained ML model artifacts (regenerated via POST /api/v1/ml/train)
-models/
